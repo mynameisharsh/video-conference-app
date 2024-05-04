@@ -8,7 +8,6 @@ export const useGetCalls = () => {
   const client = useStreamVideoClient();
   const { user } = useUser();
   useEffect(() => {
-    console.log(client, user);
     if (!client || !user?.id) return;
 
     const getCalls = async () => {
@@ -29,7 +28,6 @@ export const useGetCalls = () => {
           ],
         },
       });
-      console.log(calls);
       setCalls(calls);
       setLoading(false);
     };
