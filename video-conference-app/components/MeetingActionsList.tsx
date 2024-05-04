@@ -8,6 +8,8 @@ import MeetingModal from "./MeetingModal";
 import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
 import { useUser } from "@clerk/nextjs";
 import { useToast } from "./ui/use-toast";
+import { Textarea } from "./ui/textarea";
+import ReactDatePicker from "react-datepicker";
 
 const initialValues = {
   dateTime: new Date(),
@@ -92,13 +94,61 @@ const MeetingActionsList = () => {
         onClick={() => router.push("/recordings")}
       />
 
-      <MeetingModal
-        title="Start an instant meeting"
-        buttonText="Start Meeting"
-        isOpen={meetingState === "isInstantMeeting"}
-        onClick={() => createMeeting()}
-        onClose={() => setMeetingState(undefined)}
-      />
+      {meetingState === "isScheduleMeeting" && !callDetail ? (
+        <MeetingModal
+          title="Create Meeting"
+          buttonText="Schedule Meeting"
+          isOpen={meetingState === "isScheduleMeeting"}
+          onClick={() => createMeeting()}
+          onClose={() => setMeetingState(undefined)}
+        >
+          <div className="flex flex-col gap-2">
+            <label className="text-white font-normal">Description</label>
+            <Textarea
+              className="bg-dark-2 border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-white"
+              onChange={(e) =>
+                setValues({ ...values, description: e.target.value })
+              }
+            />
+            <label className="text-white font-normal">Date and Time</label>
+            <ReactDatePicker
+              selected={values.dateTime}
+              className="bg-dark-2 rounded p-2 w-full border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-white"
+              onChange={(e) => setValues({ ...values, dateTime: e! })}
+              showTimeSelect
+              timeFormat="HH:mm"
+              timeIntervals={15}
+              timeCaption="time"
+              dateFormat="MMMM d,yyyy h:mm aa"
+            />
+          </div>
+        </MeetingModal>
+      ) : (
+        <MeetingModal
+          title="Meeting created"
+          image="/icons/checked.svg"
+          buttonText="Copy meeting link"
+          isOpen={meetingState === "isScheduleMeeting"}
+          onClick={() => {
+            console.log(process.env.NEXT_PUBLIC_BASE_URL);
+            navigator.clipboard.writeText(
+              `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${callDetail?.id}`
+            );
+            toast({ title: "Link copied" });
+          }}
+          onClose={() => setMeetingState(undefined)}
+        />
+      )}
+
+      {meetingState === "isInstantMeeting" ? (
+        <MeetingModal
+          title="Start an instant meeting"
+          buttonText="Start Meeting"
+          isOpen={meetingState === "isInstantMeeting"}
+          onClick={() => createMeeting()}
+          onClose={() => setMeetingState(undefined)}
+        />
+      ) : null}
     </section>
   );
 };
