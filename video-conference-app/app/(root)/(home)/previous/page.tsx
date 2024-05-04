@@ -21,7 +21,7 @@ const Previous = () => {
               key={index}
               isPrevious={true}
               type="previous"
-              title={meeting.state.custom.description}
+              title={meeting.state.custom?.description}
               date={
                 meeting.state.startsAt?.toLocaleString() || "No date specified"
               }

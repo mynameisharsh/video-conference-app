@@ -10,6 +10,7 @@ import { useUser } from "@clerk/nextjs";
 import { useToast } from "./ui/use-toast";
 import { Textarea } from "./ui/textarea";
 import ReactDatePicker from "react-datepicker";
+import { Input } from "./ui/input";
 
 const initialValues = {
   dateTime: new Date(),
@@ -102,7 +103,7 @@ const MeetingActionsList = () => {
           onClick={() => createMeeting()}
           onClose={() => setMeetingState(undefined)}
         >
-          <div className="flex flex-col gap-2">
+          <div className="w-full flex flex-col gap-2">
             <label className="text-white font-normal">Description</label>
             <Textarea
               className="bg-dark-2 border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-white"
@@ -130,7 +131,6 @@ const MeetingActionsList = () => {
           buttonText="Copy meeting link"
           isOpen={meetingState === "isScheduleMeeting"}
           onClick={() => {
-            console.log(process.env.NEXT_PUBLIC_BASE_URL);
             navigator.clipboard.writeText(
               `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${callDetail?.id}`
             );
@@ -148,6 +148,22 @@ const MeetingActionsList = () => {
           onClick={() => createMeeting()}
           onClose={() => setMeetingState(undefined)}
         />
+      ) : null}
+      {meetingState === "isJoiningMeeting" ? (
+        <MeetingModal
+          title="Type the link here"
+          buttonText="Join Meeting"
+          isOpen={meetingState === "isJoiningMeeting"}
+          onClick={() => router.push(values.link)}
+          onClose={() => setMeetingState(undefined)}
+        >
+          <Input
+            onChange={(e) => {
+              setValues({ ...values, link: e.target.value });
+            }}
+            className="text-white bg-dark-2 border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+          />
+        </MeetingModal>
       ) : null}
     </section>
   );

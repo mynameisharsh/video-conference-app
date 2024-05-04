@@ -41,7 +41,7 @@ const MeetingInformationCard = ({
       />
 
       <h1 className="text-white font-bold text-xl">
-        {title || "No Description"}
+        {title || "Personal Meeting"}
       </h1>
 
       <p className="text-[#ECF0FF]">{date}</p>
